@@ -26,13 +26,13 @@ import java.io.ByteArrayOutputStream
 import java.util.zip.GZIPOutputStream
 import javax.ws.rs.HttpMethod
 
-class RestEndpoint(val request: HttpRequest,val authentication: Option[Map[String, String]]) {
+class RestEndpoint(val request: HttpRequest,val authentication: Map[String, String]) {
 
   def withAuth(): HttpRequest = {
     if(authentication.contains("clientId") && authentication.contains("clientSecret") && authentication.contains("tokenUrl") && authentication.contains("scope")) {
-      val clientId = authentication.get("clientId")
-      val clientSecret = authentication.get("clientSecret")
-      val tokenUrl = authentication.get("tokenUrl")
+      val clientId = authentication("clientId")
+      val clientSecret = authentication("clientSecret")
+      val tokenUrl = authentication("tokenUrl")
       val token = getToken(clientId, clientSecret, tokenUrl)
       request.header("Authorization", s"Bearer $token")
     } else {
